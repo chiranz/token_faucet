@@ -4,7 +4,7 @@ import { Footer } from "../src/layout/Footer";
 
 export default function Home() {
   return (
-    <div className="w-screen h-screen">
+    <div className="h-screen">
       <NavbarPage />
       <div className="flex flex-col items-center justify-center h-full">
         <h1 className="text-3xl">A NextJs Boilerplate for DAAP Development</h1>
