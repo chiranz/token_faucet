@@ -1,11 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
+import { getSignerAddress } from "../web3provider";
+import { triggerToast } from "../components/Toast";
 
 export const NavbarPage = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [ethereum, setEthereum] = useState(null);
+  const [signerAddress, setSignerAddress] = useState(null);
+
+  async function setSigner() {
+    const address = await getSignerAddress();
+    setSignerAddress(address);
+  }
+  useEffect(() => {
+    setEthereum((window as any).ethereum);
+    setSigner();
+  }, [signerAddress]);
+  console.log(signerAddress);
 
   const toggle = () => {
     setIsOpen(!isOpen);
+  };
+  const handleConnect = async () => {
+    if (ethereum) {
+      await ethereum.request({ method: "eth_requestAccounts" });
+      setSigner();
+
+      triggerToast({
+        message: "Wallet connected successfully!",
+        type: "success",
+        position: "topRight",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -47,7 +74,15 @@ export const NavbarPage = () => {
         </Navbar.Nav>
         <Navbar.Nav position="right">
           <Navbar.Item>
-            <Navbar.Link href="#">Connect</Navbar.Link>
+            {signerAddress ? (
+              <Navbar.Link href="#" handleClick={() => {}}>
+                {signerAddress}
+              </Navbar.Link>
+            ) : (
+              <Navbar.Link href="#" handleClick={handleConnect}>
+                Connect
+              </Navbar.Link>
+            )}
           </Navbar.Item>
         </Navbar.Nav>
       </Navbar.Collapse>
@@ -56,6 +91,32 @@ export const NavbarPage = () => {
 };
 
 /* Navbar logic */
+interface Props {
+  children: ReactNode;
+}
+
+interface NavbarProps extends Props {
+  textColor?: string;
+  bgColor?: string;
+  className?: string;
+}
+
+interface NavbarNavProps extends Props {
+  position?: "left" | "center" | "right";
+}
+
+interface NavbarCollapseProps extends Props {
+  isOpen: boolean;
+}
+
+interface NavbarTogglerProps {
+  toggle: () => void;
+}
+
+interface LinkProps extends Props {
+  href: string;
+  handleClick?: null | (() => void);
+}
 
 const style = {
   header: `shadow py-2 px-4 `,
@@ -75,20 +136,20 @@ const style = {
   link: `block cursor-pointer py-1.5 md:py-1 px-4 md:px-2 hover:text-gray-400 font-medium`,
 };
 
-const Navbar = ({ bgColor, textColor, children }) => (
+const Navbar = ({ bgColor, textColor, children }: NavbarProps) => (
   <div className={`${style.header}`}>
     <nav className={`${bgColor} ${textColor} ${style.navbar}`}>{children}</nav>
   </div>
 );
 
 /* You can wrap the a tag with Link and pass href to Link if you are using either Create-React-App, Next.js or Gatsby */
-Navbar.Brand = ({ children, href }) => (
+Navbar.Brand = ({ children, href }: LinkProps) => (
   <a href={href} className={style.brand}>
     <strong>{children}</strong>
   </a>
 );
 
-Navbar.Toggler = ({ toggle }) => (
+Navbar.Toggler = ({ toggle }: NavbarTogglerProps) => (
   <button
     type="button"
     aria-expanded="false"
@@ -100,7 +161,7 @@ Navbar.Toggler = ({ toggle }) => (
   </button>
 );
 
-Navbar.Collapse = ({ children, isOpen }) => (
+Navbar.Collapse = ({ children, isOpen }: NavbarCollapseProps) => (
   <div
     className={`${isOpen ? style.collapse.open : style.collapse.close} 
     ${style.collapse.default}`}
@@ -115,19 +176,22 @@ The navbar nav has three positions
  - center
  - right
 * */
-Navbar.Nav = ({ children, position }) => (
+Navbar.Nav = ({ children, position }: NavbarNavProps) => (
   <ul className={style.nav[position]}>{children}</ul>
 );
 
 Navbar.Item = ({ children }) => <li>{children}</li>;
 
 /* You can wrap the a tag with Link and pass href to Link if you are using either Create-React-App, Next.js or Gatsby */
-Navbar.Link = ({ children, href, onClick = null }) => {
-  if (onClick) {
+Navbar.Link = ({ children, href = "", handleClick = null }: LinkProps) => {
+  if (handleClick || href === "") {
     return (
-      <Link href={href}>
-        <a className={style.link}>{children}</a>
-      </Link>
+      <button
+        onClick={handleClick}
+        className={`${style.link} w-40 truncate border rounded-lg `}
+      >
+        {children}
+      </button>
     );
   }
   return (
