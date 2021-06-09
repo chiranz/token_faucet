@@ -26,7 +26,7 @@ const config: HardhatUserConfig = {
       chainId: 1337,
     },
     ropsten: {
-      url: "https://ropsten.infura.io/v3/18c57b36265d40f89f18ef3a90865d07",
+      url: `${process.env.INFURA_API}`,
       accounts: [`0x${process.env.PRIVATE_KEY}`],
     },
   },
