@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
-import { getSignerAddress } from "../web3provider";
+import { getSignerAddress } from "../provider";
 import { triggerToast } from "../components/Toast";
 
 export const NavbarPage = () => {
