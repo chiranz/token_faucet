@@ -1,12 +1,16 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode, useContext } from "react";
 import Link from "next/link";
 import { getSignerAddress } from "../provider";
 import { triggerToast } from "../components/Toast";
+import { TransactionContext } from "../context/TransactionContext";
+import Button from "../components/tailwind/Button";
+import { SpinnerIcon } from "../assets/SvgIcons";
 
 export const NavbarPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [ethereum, setEthereum] = useState(null);
   const [signerAddress, setSignerAddress] = useState(null);
+  const context = useContext(TransactionContext);
 
   async function setSigner() {
     const address = await getSignerAddress();
@@ -27,10 +31,10 @@ export const NavbarPage = () => {
       setSigner();
 
       triggerToast({
-        message: "Wallet connected successfully!",
+        children: <div>Wallet connected successfully!</div>,
         type: "success",
         position: "topRight",
-        duration: 5000,
+        duration: 3000,
       });
     }
   };
@@ -73,6 +77,14 @@ export const NavbarPage = () => {
           </Navbar.Item>
         </Navbar.Nav>
         <Navbar.Nav position="right">
+          {context.pending && (
+            <Navbar.Item>
+              <Button className="flex py-1.5 mr-2 rounded-md bg-red-500">
+                {SpinnerIcon()}
+                Pending
+              </Button>
+            </Navbar.Item>
+          )}
           <Navbar.Item>
             {signerAddress ? (
               <Navbar.Link href="#" handleClick={() => {}}>

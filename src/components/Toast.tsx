@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import ReactDOM from "react-dom";
 import {
   DangerIcon,
@@ -11,7 +11,7 @@ type MessageTypeProps = "success" | "danger" | "info" | "warning";
 
 type ToastProps = {
   type?: MessageTypeProps;
-  message: string;
+  children: ReactElement;
   position?: PositionProps;
   duration?: number;
 };
@@ -26,13 +26,13 @@ const borderColors = {
 
 export const triggerToast = ({
   type = "info",
-  message,
+  children,
   position = "topRight",
   duration = 4000,
 }: ToastProps) => {
   ReactDOM.render(
     <ToastContainer duration={duration} placement={position} type={type}>
-      {message}
+      {children}
     </ToastContainer>,
     document.getElementById("toast")
   );
