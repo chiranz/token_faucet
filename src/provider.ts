@@ -8,7 +8,6 @@ export const getProvider = async () => {
     typeof window !== "undefined" &&
     typeof (window as any).ethereum !== "undefined"
   ) {
-    console.log(process.env.INFURA_API);
     provider = new ethers.providers.Web3Provider(
       (window as any).ethereum
     ) as Provider;

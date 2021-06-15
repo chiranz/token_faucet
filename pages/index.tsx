@@ -1,33 +1,25 @@
 import { NavbarPage } from "../src/layout/Navbar";
 import { Footer } from "../src/layout/Footer";
 import { triggerToast } from "../src/components/Toast";
-import { getEtherScanUrl, sleep } from "../helpers";
+import { getEtherScanUrl, joinClasses, sleep } from "../helpers";
 import { useContext } from "react";
-import { TransactionContext } from "../src/context/TransactionContext";
+import {
+  TransactionContext,
+  TransactionContextType,
+} from "../src/context/TransactionContext";
 import Button from "../src/components/tailwind/Button";
+import ToastChild from "../src/components/ToastChild";
 
 // TODO: Show user metamask link to install the wallet
 // TODO: Ask for user's permission to connect to the wallet if he clicks connect button.
 // TODO: Use global context for TOAST message
 
 export default function Home() {
-  const txContext = useContext(TransactionContext);
+  const txContext = useContext(TransactionContext) as TransactionContextType;
 
   const handleTransaction = async () => {
     triggerToast({
-      children: (
-        <div>
-          Transaction sent.
-          <a
-            href={getEtherScanUrl("0xhash")}
-            target="_blank"
-            className="text-blue-800"
-          >
-            {" "}
-            Link here
-          </a>
-        </div>
-      ),
+      children: <ToastChild message="Transaction Sent" txHash="0xnothing" />,
       type: "info",
       duration: 3000,
     });
@@ -35,21 +27,9 @@ export default function Home() {
     await sleep(6000);
     txContext.setPending(false);
     triggerToast({
-      children: (
-        <div>
-          Transaction sent.
-          <a
-            href={getEtherScanUrl("0xhash")}
-            target="_blank"
-            className="text-blue-800"
-          >
-            {" "}
-            Link here
-          </a>
-        </div>
-      ),
+      children: <ToastChild message="Transaction Success" txHash="0xnothing" />,
       type: "success",
-      duration: 4000,
+      duration: 3000,
     });
   };
   return (
@@ -59,10 +39,7 @@ export default function Home() {
         This boiler plate uses Hardhat, Ethers, Tailwindcss, NextJs for DAAP
         Development.
       </p>
-      <Button
-        className="mt-4 bg-green-500 outline-none focus:outline-none"
-        onClick={handleTransaction}
-      >
+      <Button color="success" onClick={handleTransaction} className="mt-6">
         Send Transaction
       </Button>
     </div>

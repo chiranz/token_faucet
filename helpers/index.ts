@@ -4,3 +4,7 @@ export const getEtherScanUrl = (txId: string) => {
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const joinClasses = (...classes: string[]) => {
+  return classes.join(" ");
+};

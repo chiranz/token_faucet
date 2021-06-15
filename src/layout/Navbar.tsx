@@ -20,7 +20,6 @@ export const NavbarPage = () => {
     setEthereum((window as any).ethereum);
     setSigner();
   }, [signerAddress]);
-  console.log(signerAddress);
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -79,7 +78,7 @@ export const NavbarPage = () => {
         <Navbar.Nav position="right">
           {context.pending && (
             <Navbar.Item>
-              <Button className="flex py-1.5 mr-2 rounded-md bg-red-500">
+              <Button className="flex py-1.5 mr-2 " color="warning">
                 {SpinnerIcon()}
                 Pending
               </Button>

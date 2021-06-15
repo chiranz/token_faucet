@@ -7,10 +7,9 @@ import {
   WarningIcon,
 } from "../assets/SvgIcons";
 
-type MessageTypeProps = "success" | "danger" | "info" | "warning";
-
+type ToastMessageTypeProps = "success" | "danger" | "info" | "warning";
 type ToastProps = {
-  type?: MessageTypeProps;
+  type?: ToastMessageTypeProps;
   children: ReactElement;
   position?: PositionProps;
   duration?: number;

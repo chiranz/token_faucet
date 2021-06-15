@@ -4,8 +4,10 @@ import {
   ReactNode,
   ButtonHTMLAttributes,
 } from "react";
+import { joinClasses } from "../../../helpers";
 
 interface BtnPropsWithChildren {}
+type ColorProps = "primary" | "success" | "danger" | "warning" | "dark";
 
 interface BtnProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -13,7 +15,7 @@ interface BtnProps
   block?: boolean;
   children: ReactNode;
   className?: string;
-  color?: "primary" | "success" | "danger" | "warning" | "indigo" | "dark";
+  color?: ColorProps;
   disabled?: boolean;
   outline?: boolean;
   rounded?: boolean;
@@ -24,7 +26,16 @@ interface BtnProps
 type ButtonRef = ForwardedRef<HTMLButtonElement>;
 
 const style = {
-  default: `text-white focus:outline-none shadow font-medium transition ease-in duration-200`,
+  base: joinClasses(
+    "border",
+    "rounded",
+    "font-bold",
+    "focus:outline-none",
+    "transition",
+    "duration-100",
+    "ease-in"
+  ),
+  default: joinClasses("hover:bg-gray-200", "border", "text-gray-700"),
   block: `flex justify-center w-full`,
   rounded: `rounded-full`,
   disabled: `opacity-60 cursor-not-allowed`,
@@ -33,43 +44,12 @@ const style = {
     md: "px-6 py-2",
     lg: "px-6 py-3 text-lg",
   },
-  color: {
-    primary: {
-      bg: `bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 focus:ring-offset-blue-200`,
-      outline: `border-blue-700 border-2 text-blue-700 active:bg-blue-700 active:text-white`,
-    },
-    success: {
-      bg: `bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-700 focus:ring-offset-green-200`,
-      outline: `border-green-700 border-2 text-green-700 active:bg-green-700 active:text-white`,
-    },
-    danger: {
-      bg: `bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-red-600 focus:ring-offset-red-200`,
-      outline: `border-red-600 border-2 text-red-600 active:bg-red-600 active:text-white`,
-    },
-    dark: {
-      bg: `bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 focus:ring-offset-gray-200`,
-      outline: `border-black border-2 text-gray-900 active:bg-black active:text-white`,
-    },
-    warning: {
-      bg: `bg-yellow-500 focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 focus:ring-offset-yellow-200`,
-      outline: `border-yellow-500 border-2 text-yellow-500 active:bg-yellow-500 active:text-white`,
-    },
-    indigo: {
-      bg: `bg-indigo-900 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-900 focus:ring-offset-indigo-200`,
-      outline: `border-indigo-900 border-2 text-indigo-900 active:bg-indigo-900 active:text-white`,
-    },
-  },
+  primary: joinClasses("hover:bg-blue-800", "bg-blue-600", "text-white"),
+  success: joinClasses("hover:bg-green-800", "bg-green-600", "text-white"),
+  danger: joinClasses("hover:bg-red-800", "bg-red-600", "text-white"),
+  warning: joinClasses("hover:bg-yellow-800", "bg-yellow-600", "text-white"),
+  dark: joinClasses("hover:bg-gray-800", "bg-gray-600", "text-white"),
 };
-
-const colors = (outline: boolean) => ({
-  primary: outline ? style.color.primary.outline : style.color.primary.bg,
-  success: outline ? style.color.success.outline : style.color.success.bg,
-  danger: outline ? style.color.danger.outline : style.color.danger.bg,
-  dark: outline ? style.color.dark.outline : style.color.dark.bg,
-  warning: outline ? style.color.warning.outline : style.color.warning.bg,
-  indigo: outline ? style.color.indigo.outline : style.color.indigo.bg,
-});
-
 const Button = forwardRef(
   (
     {
@@ -78,7 +58,6 @@ const Button = forwardRef(
       className,
       color,
       disabled = false,
-      outline,
       rounded,
       size = "md",
       submit,
@@ -91,10 +70,10 @@ const Button = forwardRef(
       {...props}
       type={submit ? "submit" : "button"}
       disabled={disabled}
-      className={`${className} ${block ? style.block : ""}
+      className={`${style.base} ${block ? style.block : ""}
         ${disabled ? style.disabled : ""} ${style.sizes[size]} 
-        ${style.default} ${rounded ? style.rounded : "rounded"}
-        ${color ? colors(outline)[color] : colors(outline).dark}`}
+        ${rounded ? style.rounded : "rounded"}
+        ${color ? style[color] : style.default} ${className}`}
     >
       {children}
     </button>
