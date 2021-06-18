@@ -32,7 +32,7 @@ const getCommonNetworkConfig = (networkName: eNetwork) => ({
 });
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{ version: "0.8.3", settings: {} }],
+    compilers: [{ version: "0.8.0", settings: {} }],
   },
   paths: { artifacts: "./src/artifacts" },
   typechain: {
